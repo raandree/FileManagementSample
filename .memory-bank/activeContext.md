@@ -9,24 +9,25 @@ source: current task evidence
 
 ## Current focus
 
-`Get-LargestFile` pipeline support is complete. It is committed on the local
-branch `ai/get-largestfile-pipeline`, together with the earlier build
-readiness work. Nothing is pushed; this clone has no remote.
+CI moved from Azure Pipelines to GitHub Actions: `.github/workflows/ci.yml`
+replaces `azure-pipelines.yml` (Decision 6 in `systemPatterns.md`). The
+change is uncommitted on `main`, which matches `origin/main`.
 
 ## Evidence
 
-- `./build.ps1` (build and test): 43 of 43 tests pass on PowerShell 7.6.4
-  (16 QA, 27 unit, 19 of them for `Get-LargestFile`). The same 43 tests pass
-  on Windows PowerShell 5.1 with `./build.ps1 -Tasks test`.
-- `./build.ps1 -Tasks pack`: module, wiki content, external help, and
-  `FileManagementSample.<version>.nupkg` are produced.
-- `./build.ps1 -Tasks hqrmtest`: 161 of 163 pass and 1 is skipped. The
-  changelog diff check fails because this clone has no `origin` remote.
-- Script Analyzer reports no findings for the function and its test file.
+- actionlint 1.7.12 reports no findings for `ci.yml`. It rejects mutated
+  copies that put a matrix expression in a step `shell` or reference an
+  unknown `needs` job.
+- Action majors checked against the latest releases on 2026-11-17:
+  `checkout` v7.0.1, `upload-artifact` v7.0.2, `download-artifact` v8.0.2.
+- `./build.ps1 -Tasks test`: 43 of 43 tests pass on PowerShell 7.6.4.
 
 ## Next step
 
-Owner reviews and merges the branch, and decides how to pin `Save-PSResource`
-to PSGallery (see `techContext.md`) before CI runs `-ResolveDependency` with
-`Stop`. `Get-FileExtensionSize` still takes no pipeline input; extend it the
-same way (see `systemPatterns.md`, Decision 5) if wanted.
+Before the first push, the owner decides how to keep `Save-PSResource` on
+PSGallery (see `techContext.md`); if the runner also lists
+`MicrosoftArtifactRegistry` first, the CI build job fails at
+`-ResolveDependency`. To publish, add the `GitHubToken` and
+`GalleryApiToken` repository secrets. Disable any Azure DevOps pipeline that
+still points at the deleted `azure-pipelines.yml`. `Get-FileExtensionSize`
+still takes no pipeline input (see `systemPatterns.md`, Decision 5).

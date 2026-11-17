@@ -21,17 +21,21 @@ source: repository evidence
 
 - Local: Windows, PowerShell 7.6.4, Node.js and npm present.
 - GitVersion is not installed locally, so builds fall back to version 0.0.1.
-- CI: Azure Pipelines (`azure-pipelines.yml`): Build (`pack`) -> Test matrix
-  (Windows PS 5.1 and 7, Ubuntu, macOS) -> Deploy (`publish`).
+- CI: GitHub Actions (`.github/workflows/ci.yml`, Sampler template): Package
+  Module (`-ResolveDependency -Tasks pack`) -> Test matrix (Ubuntu, Windows
+  PS 7 and 5.1, macOS) -> Deploy Module (`publish`, changelog PR) for `main`
+  and `v*` tags when the owner is `raandree`. Without the repository secrets
+  `GitHubToken` and `GalleryApiToken`, the publish tasks skip.
 - PSResourceGet registers `MicrosoftArtifactRegistry` (priority 40) before
   PSGallery; the Sampler template calls `Save-PSResource` without
   `-Repository`, so `-ResolveDependency` writes one non-terminating 404 per
-  module and aborts when `$ErrorActionPreference` is `Stop` (the default of
-  the Azure Pipelines `PowerShell@2` task).
+  module and aborts when `$ErrorActionPreference` is `Stop`, which GitHub
+  Actions sets for every `pwsh` and `powershell` step.
 - Local `dotnet` has no NuGet source, so `package_module_nupkg` cannot run
   here; `pack` uses `package_psresource_nupkg` instead.
-- The local clone has no `origin` remote, so the HQRM check
-  `Should have CHANGELOG.md in the diff` fails locally only.
+- `origin` is `https://github.com/raandree/FileManagementSample.git`. The
+  HQRM check `Should have CHANGELOG.md in the diff`, which failed without a
+  remote, has not been re-run since `origin` was added.
 
 ## Constraints
 

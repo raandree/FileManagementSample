@@ -9,8 +9,9 @@ source: repository evidence
 
 ## Current status
 
-`build` and `test` are green, `pack` is green, and `hqrmtest` passes except
-for one check that needs a git remote.
+`build`, `test`, and `pack` are green. `hqrmtest` last passed except for
+the changelog diff check, which then had no git remote. CI now runs on
+GitHub Actions; the workflow has not run on GitHub yet.
 
 ## Recent milestones
 
@@ -20,6 +21,9 @@ for one check that needs a git remote.
 - 2026-11-17: Made `Get-LargestFile` pipeline compatible: a `process` block,
   `Path` and `LiteralPath` parameter sets, and 11 new unit tests. It
   previously searched only the last piped path.
+- 2026-11-17: Moved CI from Azure Pipelines to GitHub Actions
+  (`.github/workflows/ci.yml` from the Sampler template, same four test
+  platforms, deploy guarded to the owner `raandree`).
 
 ## Stable capabilities
 
@@ -31,6 +35,9 @@ for one check that needs a git remote.
 
 ## Open work
 
-- Pin dependency resolution to PSGallery (Sampler template issue).
+- Pin dependency resolution to PSGallery before the first CI run (Sampler
+  template issue, see `techContext.md`).
+- Add the `GitHubToken` and `GalleryApiToken` secrets before releasing, and
+  disable any Azure DevOps pipeline that used `azure-pipelines.yml`.
 - Optionally run `hqrmtest` in CI and replace placeholder manifest metadata
   (author `Me`, no project or license URI, no license file).
