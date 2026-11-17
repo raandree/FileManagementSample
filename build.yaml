@@ -49,17 +49,31 @@ BuildWorkflow:
 
   build:
     - Clean
+    - Task1
     - Build_Module_ModuleBuilder
     - Build_NestedModules_ModuleBuilder
     - Create_changelog_release_output
 
+  # Generates the command reference pages, the external help file (MAML), and
+  # the wiki content in output/WikiContent. Requires PlatyPS.
+  docs:
+    - Create_Wiki_Output_Folder
+    - Generate_Markdown_For_Public_Commands
+    - Generate_External_Help_File_For_Public_Commands
+    - Clean_Markdown_Of_Public_Commands
+    - Copy_Source_Wiki_Folder
+    - Generate_Wiki_Sidebar
+    - Clean_Markdown_Metadata
+    - Package_Wiki_Content
 
   pack:
     - build
+    - docs
+    - package_psresource_nupkg
 
-    - package_module_nupkg
-
-
+  # Quality gate that runs the DscResource.Test HQRM tests (see DscTest below).
+  hqrmtest:
+    - Invoke_HQRM_Tests_Stop_On_Fail
 
   # Defining test task to be run when invoking `./build.ps1 -Tasks test`
   test:
@@ -137,15 +151,30 @@ Pester:
   #CodeCoverageFilePattern: JaCoCo_Merge.xml # the pattern used to search all pipeline test job artifacts
   #CodeCoverageMergedOutputFile: JaCoCo_coverage.xml # the file that is created for the merged code coverage
 
+# Configuration for the HQRM tests in DscResource.Test (task Invoke_HQRM_Tests).
+# Keys under Pester.Configuration map to the Pester 5 configuration, and keys
+# under Script are passed as parameters to every HQRM test script.
 DscTest:
-  ExcludeTag:
-    - "Common Tests - New Error-Level Script Analyzer Rules"
-  Tag:
-  ExcludeSourceFile:
-    - output
-  ExcludeModuleFile:
-    - Modules/DscResource.Common
-  #  - Templates
+  Pester:
+    Configuration:
+      Filter:
+        Tag:
+        ExcludeTag:
+          - "Common Tests - New Error-Level Script Analyzer Rules"
+      Output:
+        Verbosity: Detailed
+        CIFormat: Auto
+      TestResult:
+        Enabled: true
+        OutputFormat: NUnitXML
+        OutputEncoding: ascii
+        OutputPath: ./output/testResults/NUnitXml_HQRM_Tests.xml
+  Script:
+    ExcludeSourceFile:
+      - output
+    ExcludeModuleFile:
+      - Modules/DscResource.Common
+    MainGitBranch: main
 
 # Import ModuleBuilder tasks from a specific PowerShell module using the build
 # task's alias. Wildcard * can be used to specify all tasks that has a similar
@@ -156,6 +185,10 @@ ModuleBuildTasks:
     - '*.build.Sampler.ib.tasks'
   Sampler.GitHubTasks:
     - '*.ib.tasks'
+  DscResource.DocGenerator:
+    - 'Task.*'
+  DscResource.Test:
+    - 'Task.*'
 
 
 # Invoke-Build Header to be used to 'decorate' the terminal output of the tasks.
@@ -170,6 +203,13 @@ TaskHeader: |
   Write-Build DarkGray "  $($Task.InvocationInfo.ScriptName):$($Task.InvocationInfo.ScriptLineNumber)"
   ""
 
+
+####################################################
+#      DscResource.DocGenerator Configuration      #
+####################################################
+DscResource.DocGenerator:
+  Generate_Wiki_Sidebar:
+    AlwaysOverwrite: true
 
 ####################################################
 #             Git Configuration                    #

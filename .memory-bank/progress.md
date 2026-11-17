@@ -1,0 +1,36 @@
+---
+status: current
+last-verified: 2026-11-17
+owner: active-agent
+source: repository evidence
+---
+
+# Progress
+
+## Current status
+
+`build` and `test` are green, `pack` is green, and `hqrmtest` passes except
+for one check that needs a git remote.
+
+## Recent milestones
+
+- 2026-11-16: Memory Bank initialized from repository evidence.
+- 2026-11-16: Added comment-based help, unit tests, README, about topic,
+  wiki home page, and the `docs` and `hqrmtest` workflows.
+- 2026-11-17: Made `Get-LargestFile` pipeline compatible: a `process` block,
+  `Path` and `LiteralPath` parameter sets, and 11 new unit tests. It
+  previously searched only the last piped path.
+
+## Stable capabilities
+
+- `./build.ps1` builds the module and runs QA and unit tests.
+- `./build.ps1 -Tasks pack` produces the package, external help, and wiki.
+- `Get-LargestFile` and `Get-FileExtensionSize` have complete help.
+- `Get-LargestFile` accepts folder paths and folder objects from the
+  pipeline; `Top` applies to each path.
+
+## Open work
+
+- Pin dependency resolution to PSGallery (Sampler template issue).
+- Optionally run `hqrmtest` in CI and replace placeholder manifest metadata
+  (author `Me`, no project or license URI, no license file).

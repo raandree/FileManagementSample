@@ -2,23 +2,65 @@ TOPIC
     about_FileManagementSample
 
 SHORT DESCRIPTION
-    Some nice functions to manage files
+    Shows which files and file extensions use the most space in a folder and
+    its subfolders.
 
 LONG DESCRIPTION
-    Some nice functions to manage files
+    The FileManagementSample module contains commands that search a folder,
+    including all of its subfolders, and report what uses the most space.
+    Use them to find out what fills a disk before you clean it up.
+
+    The module exports the following commands:
+
+    Get-LargestFile
+        Returns the largest files in a folder tree, largest first, as
+        System.IO.FileInfo objects. It accepts folder paths and folder
+        objects from the pipeline and searches each folder on its own.
+
+    Get-FileExtensionSize
+        Returns the file extensions with the most files in a folder tree.
+        For each extension, it returns the number of files (FileCount) and
+        their combined size in gigabytes (TotalFileSize). The extensions are
+        ranked by the number of files, not by size.
+
+    Both commands skip items they cannot read, for example because access
+    is denied, and return no output when the path does not exist.
 
 EXAMPLES
-    PS C:\> {{ add examples here }}
+    PS C:\> Get-LargestFile -Path 'C:\Logs' -Top 5
+
+    Returns the five largest files in the folder C:\Logs and its subfolders.
+
+    PS C:\> Get-ChildItem -Path $HOME -Directory | Get-LargestFile -Top 1
+
+    Returns the largest file in each folder directly below your home folder,
+    including the subfolders of those folders.
+
+    PS C:\> Get-FileExtensionSize -Path 'C:\Data' -Top 3
+
+    Returns the three extensions with the most files in the folder C:\Data
+    and its subfolders, with the number of files and their total size.
+
+    PS C:\> Get-FileExtensionSize -Path $HOME -Top 10 |
+                Sort-Object -Property TotalFileSize -Descending
+
+    Gets the ten extensions with the most files in your home folder and
+    sorts them by total size, largest first.
 
 NOTE:
     Thank you to all those who contributed to this module, by writing code, sharing opinions, and provided feedback.
 
 TROUBLESHOOTING NOTE:
+    If a command returns no output, check that the path exists and that you
+    can read it. Items that cannot be read are skipped without an error.
+
     Look out on the Github repository for issues and new releases.
 
 SEE ALSO
-    - {{ Please add Project URI such as github }}}
+    Get-Help Get-LargestFile -Full
+    Get-Help Get-FileExtensionSize -Full
+    Get-ChildItem
 
 KEYWORDS
-    {{ Add comma separated keywords here }}
+    File, Folder, Disk, Space, Size, Extension, Largest
 
