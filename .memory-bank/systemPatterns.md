@@ -73,10 +73,10 @@ source: repository evidence
 - Choice: `.github/workflows/ci.yml` replaces `azure-pipelines.yml`. It is the
   Sampler GitHub Actions template with four changes: the module name, the
   deploy owner guard `raandree` (from `origin`), the test matrix, and the
-  build step `Prefer PSGallery for dependency resolution`, which sets
-  PSGallery to priority 0. The matrix keeps the four Azure legs; the Windows
-  PowerShell 5.1 leg selects its shell through `jobs.test.defaults.run`,
-  because a step `shell` key accepts no context.
+  build step `Prefer PSGallery for dependency resolution`, which creates the
+  repository store and sets PSGallery to priority 0. The matrix keeps the
+  four Azure legs; the Windows PowerShell 5.1 leg selects its shell through
+  `jobs.test.defaults.run`, because a step `shell` key accepts no context.
 - Rationale: The repository is hosted on GitHub, and the Sampler CI rules
   require the shared template so pipelines do not drift. The extra step
   fixes the first run's failure (see `techContext.md`) without editing the

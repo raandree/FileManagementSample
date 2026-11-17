@@ -86,6 +86,10 @@ jobs:
       - name: Prefer PSGallery for dependency resolution
         shell: pwsh
         run: |
+          # A fresh runner has no repository store yet, and Set-PSResourceRepository
+          # cannot load its dynamic parameters without one. Get-PSResourceRepository
+          # creates the store with the default repositories.
+          $null = Get-PSResourceRepository
           Set-PSResourceRepository -Name PSGallery -Priority 0
           Get-PSResourceRepository | Format-Table -Property Name, Uri, Trusted, Priority -AutoSize
 

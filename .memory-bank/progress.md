@@ -10,8 +10,8 @@ source: repository evidence
 ## Current status
 
 `build`, `test`, and `pack` are green. `hqrmtest` last passed except for
-the changelog diff check, which then had no git remote. GitHub Actions run
-1 (`20bb692`) failed at dependency resolution; the fix is not pushed yet.
+the changelog diff check, which then had no git remote. GitHub Actions runs
+1 and 2 failed in the build job; the fix for run 2 is not pushed yet.
 
 ## Recent milestones
 
@@ -26,6 +26,9 @@ the changelog diff check, which then had no git remote. GitHub Actions run
   platforms, deploy guarded to the owner `raandree`).
 - 2026-11-17: Fixed the first GitHub Actions failure: the build job now
   sets PSGallery to priority 0 before `-ResolveDependency`.
+- 2026-11-17: Fixed the second GitHub Actions failure: a fresh runner has
+  no PSResourceGet repository store, so the step now creates it before
+  `Set-PSResourceRepository`.
 
 ## Stable capabilities
 
@@ -37,8 +40,8 @@ the changelog diff check, which then had no git remote. GitHub Actions run
 
 ## Open work
 
-- Push the PSGallery priority fix and confirm that all four test legs pass
-  on GitHub Actions.
+- Push the repository store fix and confirm that all four test legs pass on
+  GitHub Actions.
 - Add the `GitHubToken` and `GalleryApiToken` secrets before releasing, and
   disable any Azure DevOps pipeline that used `azure-pipelines.yml`.
 - Optionally run `hqrmtest` in CI and replace placeholder manifest metadata

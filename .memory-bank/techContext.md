@@ -26,13 +26,18 @@ source: repository evidence
   PS 7 and 5.1, macOS) -> Deploy Module (`publish`, changelog PR) for `main`
   and `v*` tags when the owner is `raandree`. Without the repository secrets
   `GitHubToken` and `GalleryApiToken`, the publish tasks skip.
-- PSResourceGet registers `MicrosoftArtifactRegistry` (priority 40) before
-  PSGallery; the Sampler template calls `Save-PSResource` without
-  `-Repository`, so `-ResolveDependency` writes one non-terminating 404 per
-  module and aborts when `$ErrorActionPreference` is `Stop`, which GitHub
-  Actions sets for every `pwsh` and `powershell` step. The CI build job
-  therefore sets PSGallery to priority 0 first; interactive local runs
+- PSResourceGet 1.3.1, which `Resolve-Dependency.ps1` bootstraps, registers
+  `MicrosoftArtifactRegistry` (priority 40) before PSGallery when it creates
+  the repository store; the built-in 1.2.0 registers PSGallery only. The
+  Sampler template calls `Save-PSResource` without `-Repository`, so
+  `-ResolveDependency` writes one non-terminating 404 per module and aborts
+  when `$ErrorActionPreference` is `Stop`, which GitHub Actions sets for
+  every `pwsh` and `powershell` step. The CI build job therefore creates
+  the store and sets PSGallery to priority 0 first; interactive local runs
   (`Continue`) only print the errors.
+- A fresh runner has no repository store, and `Set-PSResourceRepository`
+  fails while loading its dynamic parameters until one exists;
+  `Get-PSResourceRepository` creates it.
 - Local `dotnet` has no NuGet source, so `package_module_nupkg` cannot run
   here; `pack` uses `package_psresource_nupkg` instead.
 - `origin` is `https://github.com/raandree/FileManagementSample.git`. The
