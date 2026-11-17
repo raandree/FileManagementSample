@@ -30,7 +30,9 @@ source: repository evidence
   PSGallery; the Sampler template calls `Save-PSResource` without
   `-Repository`, so `-ResolveDependency` writes one non-terminating 404 per
   module and aborts when `$ErrorActionPreference` is `Stop`, which GitHub
-  Actions sets for every `pwsh` and `powershell` step.
+  Actions sets for every `pwsh` and `powershell` step. The CI build job
+  therefore sets PSGallery to priority 0 first; interactive local runs
+  (`Continue`) only print the errors.
 - Local `dotnet` has no NuGet source, so `package_module_nupkg` cannot run
   here; `pack` uses `package_psresource_nupkg` instead.
 - `origin` is `https://github.com/raandree/FileManagementSample.git`. The

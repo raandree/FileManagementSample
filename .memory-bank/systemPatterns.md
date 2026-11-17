@@ -71,14 +71,18 @@ source: repository evidence
 ### Decision 6: Run CI on GitHub Actions from the Sampler template
 
 - Choice: `.github/workflows/ci.yml` replaces `azure-pipelines.yml`. It is the
-  Sampler GitHub Actions template with only three changes: the module name,
-  the deploy owner guard `raandree` (from `origin`), and the test matrix. The
-  matrix keeps the four Azure legs; the Windows PowerShell 5.1 leg selects
-  its shell through `jobs.test.defaults.run`, because a step `shell` key
-  accepts no context.
+  Sampler GitHub Actions template with four changes: the module name, the
+  deploy owner guard `raandree` (from `origin`), the test matrix, and the
+  build step `Prefer PSGallery for dependency resolution`, which sets
+  PSGallery to priority 0. The matrix keeps the four Azure legs; the Windows
+  PowerShell 5.1 leg selects its shell through `jobs.test.defaults.run`,
+  because a step `shell` key accepts no context.
 - Rationale: The repository is hosted on GitHub, and the Sampler CI rules
-  require the shared template so pipelines do not drift. The Azure
-  `Code_Coverage` job only downloaded artifacts (its merge and upload steps
-  were commented out), so it has no equivalent. Without the `GitHubToken`
-  and `GalleryApiToken` secrets every publish task skips, so the real owner
-  guard publishes nothing until the owner adds them.
+  require the shared template so pipelines do not drift. The extra step
+  fixes the first run's failure (see `techContext.md`) without editing the
+  Sampler-owned `Resolve-Dependency.ps1`, which matches the 0.120.1
+  template byte for byte. The Azure `Code_Coverage` job only downloaded
+  artifacts (its merge and upload steps were commented out), so it has no
+  equivalent. Without the `GitHubToken` and `GalleryApiToken` secrets every
+  publish task skips, so the real owner guard publishes nothing until the
+  owner adds them.

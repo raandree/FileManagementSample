@@ -78,6 +78,17 @@ jobs:
           Write-Host -Object "ModuleVersion (FullSemVer): $($gitVersionObject.FullSemVer)"
           "## FileManagementSample $($gitVersionObject.FullSemVer)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
 
+      # Resolve-Dependency.ps1 (Sampler template) calls Save-PSResource without
+      # -Repository, so PSResourceGet searches repositories in priority order.
+      # It registers MicrosoftArtifactRegistry (priority 40) ahead of PSGallery
+      # (50); the 404 it returns for every build dependency is a non-terminating
+      # error that $ErrorActionPreference = 'stop' in each pwsh step makes fatal.
+      - name: Prefer PSGallery for dependency resolution
+        shell: pwsh
+        run: |
+          Set-PSResourceRepository -Name PSGallery -Priority 0
+          Get-PSResourceRepository | Format-Table -Property Name, Uri, Trusted, Priority -AutoSize
+
       - name: Build & Package Module
         shell: pwsh
         env:

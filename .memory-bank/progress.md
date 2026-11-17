@@ -10,8 +10,8 @@ source: repository evidence
 ## Current status
 
 `build`, `test`, and `pack` are green. `hqrmtest` last passed except for
-the changelog diff check, which then had no git remote. CI now runs on
-GitHub Actions; the workflow has not run on GitHub yet.
+the changelog diff check, which then had no git remote. GitHub Actions run
+1 (`20bb692`) failed at dependency resolution; the fix is not pushed yet.
 
 ## Recent milestones
 
@@ -24,6 +24,8 @@ GitHub Actions; the workflow has not run on GitHub yet.
 - 2026-11-17: Moved CI from Azure Pipelines to GitHub Actions
   (`.github/workflows/ci.yml` from the Sampler template, same four test
   platforms, deploy guarded to the owner `raandree`).
+- 2026-11-17: Fixed the first GitHub Actions failure: the build job now
+  sets PSGallery to priority 0 before `-ResolveDependency`.
 
 ## Stable capabilities
 
@@ -35,8 +37,8 @@ GitHub Actions; the workflow has not run on GitHub yet.
 
 ## Open work
 
-- Pin dependency resolution to PSGallery before the first CI run (Sampler
-  template issue, see `techContext.md`).
+- Push the PSGallery priority fix and confirm that all four test legs pass
+  on GitHub Actions.
 - Add the `GitHubToken` and `GalleryApiToken` secrets before releasing, and
   disable any Azure DevOps pipeline that used `azure-pipelines.yml`.
 - Optionally run `hqrmtest` in CI and replace placeholder manifest metadata
