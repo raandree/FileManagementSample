@@ -10,8 +10,9 @@ source: repository evidence
 ## Current status
 
 `build`, `test`, and `pack` are green. `hqrmtest` last passed except for
-the changelog diff check, which then had no git remote. GitHub Actions runs
-1 and 2 failed in the build job; the fix for run 2 is not pushed yet.
+the changelog diff check, which then had no git remote. GitHub Actions CI
+is green since the repository store fix; the test summary job is not
+pushed yet.
 
 ## Recent milestones
 
@@ -29,6 +30,8 @@ the changelog diff check, which then had no git remote. GitHub Actions runs
 - 2026-11-17: Fixed the second GitHub Actions failure: a fresh runner has
   no PSResourceGet repository store, so the step now creates it before
   `Set-PSResourceRepository`.
+- 2026-11-17: Added the `Test Results` job, which writes a summary of all
+  test runs to the summary page of each GitHub Actions run.
 
 ## Stable capabilities
 
@@ -40,8 +43,7 @@ the changelog diff check, which then had no git remote. GitHub Actions runs
 
 ## Open work
 
-- Push the repository store fix and confirm that all four test legs pass on
-  GitHub Actions.
+- Push the test summary job and check its summary on GitHub Actions.
 - Add the `GitHubToken` and `GalleryApiToken` secrets before releasing, and
   disable any Azure DevOps pipeline that used `azure-pipelines.yml`.
 - Optionally run `hqrmtest` in CI and replace placeholder manifest metadata

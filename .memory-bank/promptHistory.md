@@ -17,3 +17,4 @@ Trim entries older than 90 days.
 2026-11-17 10:57 UTC | software-engineer | Move AzDO CI to GitHub Actions
 2026-11-17 11:26 UTC | software-engineer | Fix the failing GitHub Actions CI
 2026-11-17 11:48 UTC | software-engineer | Fix CI: missing PSResourceGet store
+2026-11-17 12:03 UTC | software-engineer | Add a CI test result summary

@@ -3,7 +3,8 @@
 #   * Build  - calculate the version with GitVersion, build and package the
 #              module, then publish the output/ folder as a build artifact.
 #   * Test   - on every target platform, reuse the build artifact and run the
-#              Sampler test workflow.
+#              Sampler test workflow, then summarize the NUnit results of all
+#              platforms on the summary page of the workflow run.
 #   * Deploy - on the upstream repository, for pushes to main or v* tags,
 #              publish the release to GitHub and the PowerShell Gallery and
 #              raise the changelog pull request.
@@ -164,6 +165,26 @@ jobs:
           name: CodeCoverage-${{ matrix.artifact }}
           path: output/testResults/
           if-no-files-found: warn
+
+  test-summary:
+    name: Test Results
+    needs: test
+    # Summarize failed test runs too, but not runs that never started.
+    if: ${{ !cancelled() && needs.test.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download Test Results
+        uses: actions/download-artifact@v8
+        with:
+          pattern: CodeCoverage-*
+          path: testResults/
+
+      - name: Publish Test Summary
+        shell: pwsh
+        run: ./.github/scripts/Write-TestResultSummary.ps1 -Path testResults
 
   deploy:
     name: Deploy Module ${{ needs.build.outputs.fullSemVer }}

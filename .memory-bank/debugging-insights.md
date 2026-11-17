@@ -41,3 +41,12 @@ use a fresh clone so `output/RequiredModules` starts empty.
 - Cause: the cmdlet loads the repository store while binding its dynamic
   parameters, and a fresh profile has no store yet.
 - Fix: call `Get-PSResourceRepository` first; it creates the store.
+
+## A suppressed warning still counts as a build warning
+
+- Symptom: `Build succeeded with warnings` although the test passes
+  `-WarningAction SilentlyContinue` to the code that warns.
+- Cause: Invoke-Build replaces `Write-Warning` with a function that records
+  every warning, regardless of `-WarningAction`.
+- Fix: call `Microsoft.PowerShell.Utility\Write-Warning` in code that runs
+  inside the build, as `Write-TestResultSummary.ps1` does.

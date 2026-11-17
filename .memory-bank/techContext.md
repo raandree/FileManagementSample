@@ -23,9 +23,11 @@ source: repository evidence
 - GitVersion is not installed locally, so builds fall back to version 0.0.1.
 - CI: GitHub Actions (`.github/workflows/ci.yml`, Sampler template): Package
   Module (`-ResolveDependency -Tasks pack`) -> Test matrix (Ubuntu, Windows
-  PS 7 and 5.1, macOS) -> Deploy Module (`publish`, changelog PR) for `main`
-  and `v*` tags when the owner is `raandree`. Without the repository secrets
-  `GitHubToken` and `GalleryApiToken`, the publish tasks skip.
+  PS 7 and 5.1, macOS) -> Test Results (job summary from all NUnit files,
+  `.github/scripts/Write-TestResultSummary.ps1`) and Deploy Module
+  (`publish`, changelog PR) for `main` and `v*` tags when the owner is
+  `raandree`. Without the repository secrets `GitHubToken` and
+  `GalleryApiToken`, the publish tasks skip.
 - PSResourceGet 1.3.1, which `Resolve-Dependency.ps1` bootstraps, registers
   `MicrosoftArtifactRegistry` (priority 40) before PSGallery when it creates
   the repository store; the built-in 1.2.0 registers PSGallery only. The

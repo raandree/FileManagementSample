@@ -23,6 +23,8 @@ source: repository evidence
   `publish`.
 - `.github/workflows/ci.yml`: CI that builds, tests on four platforms, and
   deploys (Decision 6).
+- `.github/scripts/Write-TestResultSummary.ps1`: writes the test summary of
+  a workflow run; tested by `tests/Unit/CI/Write-TestResultSummary.Tests.ps1`.
 
 ## Decisions
 
@@ -86,3 +88,15 @@ source: repository evidence
   equivalent. Without the `GitHubToken` and `GalleryApiToken` secrets every
   publish task skips, so the real owner guard publishes nothing until the
   owner adds them.
+
+### Decision 7: Summarize test results with a repository script
+
+- Choice: The `Test Results` job downloads the `CodeCoverage-*` artifacts
+  and runs `.github/scripts/Write-TestResultSummary.ps1`, which appends the
+  totals, one row per test run, the failed tests, and all tests per run to
+  the job summary, like the Tests tab of Azure Pipelines.
+- Rationale: GitHub Actions has no built-in NUnit report. A repository
+  script needs no third-party action, no `checks: write` permission, and
+  works for pull requests from forks; it reads the NUnit 2.5 files that
+  Pester already writes. It runs on failed test runs too, and the script
+  skips files in other formats with a warning instead of miscounting them.
